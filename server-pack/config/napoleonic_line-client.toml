@@ -1,0 +1,34 @@
+#Napoleonic Line Infantry - Client Particle & Visual Configuration
+[particles]
+	#Minimum number of gunpowder smoke cloud particles spawned per musket shot (default: 20).
+	#Range: 1 ~ 100
+	smokeParticlesPerShotMin = 20
+	#Maximum number of gunpowder smoke cloud particles spawned per musket shot (default: 40).
+	#Range: 1 ~ 150
+	smokeParticlesPerShotMax = 40
+	#Global maximum number of active musket smoke particles. When exceeded during large volleys, older particles fade out faster.
+	#Range: 50 ~ 5000
+	maxTotalSmokeParticles = 800
+	#Minimum lifetime of musket smoke particles in seconds (default: 10.0s).
+	#Range: 1.0 ~ 60.0
+	smokeLifetimeMinSeconds = 10.0
+	#Maximum lifetime of musket smoke particles in seconds (default: 20.0s).
+	#Range: 2.0 ~ 120.0
+	smokeLifetimeMaxSeconds = 20.0
+	#Render bright muzzle flash at the barrel tip on shot.
+	enableMuzzleFlash = true
+	#Render priming pan smoke puff at the breech slightly before/during the shot.
+	enablePanSmoke = true
+	#Enable deterministic world-time wind drift for gunpowder smoke clouds.
+	enableWind = true
+	#Multiplier for wind drift speed on smoke particles.
+	#Range: 0.0 ~ 5.0
+	windStrengthMultiplier = 1.0
+	#Render lightweight, non-lagging bullet tracers on musket and arquebus shots.
+	enableBulletTracers = true
+	#Length of each bullet tracer streak in blocks (default: 3.2).
+	#Range: 0.5 ~ 12.0
+	tracerLength = 3.2
+	#Maximum opacity of bullet tracers (default: 0.68).
+	#Range: 0.1 ~ 1.0
+	tracerOpacity = 0.68

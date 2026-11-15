@@ -1,0 +1,29 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.napoleonic.line.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "napoleonic_line.refmap.json",
+  "plugin": "com.napoleonic.line.mixin.NapoleonicMixinPlugin",
+  "mixins": [
+    "AbstractRecruitEntityMixin",
+    "CrossBowmanEntityMixin",
+    "RecruitRangedMusketAttackGoalMixin",
+    "RecruitRangedCrossbowAttackGoalMixin",
+    "RecruitBoomstickAttackGoalMixin",
+    "RecruitMoveTowardsTargetGoalMixin",
+    "RecruitMeleeAttackGoalMixin",
+    "GunItemMixin",
+    "BulletEntityMixin"
+  ],
+  "client": [
+    "client.ClientHumanoidModelMixin",
+    "client.ClientItemInHandLayerMixin",
+    "client.ClientRecruitVillagerArmPoseMixin",
+    "client.ClientRecruitHumanArmPoseMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
+

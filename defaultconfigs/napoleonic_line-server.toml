@@ -1,0 +1,81 @@
+# Napoleonic Line Infantry - Server Configuration
+# Copy to:
+#   - world/serverconfig/napoleonic_line-server.toml (for existing world)
+#   - defaultconfigs/napoleonic_line-server.toml (for new worlds)
+
+[reload]
+	#Player musket reload time in seconds (default: 15.0s for ~3-4 shots/min).
+	#Range: 1.0 ~ 120.0
+	playerReloadSeconds = 15.0
+	#Recruit musket reload time in seconds (default: 18.0s for ~3 shots/min).
+	#Range: 1.0 ~ 120.0
+	recruitReloadSeconds = 18.0
+	#Random +/- seconds on each recruit's reload.
+	#Range: 0.0 ~ 20.0
+	recruitReloadJitterSeconds = 2.0
+	#If false, recruits stand completely still while reloading. If true, they walk slowly.
+	moveDuringReload = false
+	#Movement speed multiplier when moveDuringReload is true.
+	#Range: 0.0 ~ 1.0
+	reloadMoveSpeedMultiplier = 0.25
+
+[ballistics]
+	#Base musket ball damage for both players and recruits (default: 35.0, bypasses armor and protection).
+	#Range: 1.0 ~ 500.0
+	musketDamage = 35.0
+	#Distance in blocks after which musket ball damage begins to fall off (default: 60.0).
+	#Range: 10.0 ~ 256.0
+	damageFalloffStartDistance = 60.0
+	#Minimum damage multiplier at extreme range beyond falloff start.
+	#Range: 0.05 ~ 1.0
+	damageMinMultiplier = 0.35
+	#Whether musket balls ignore the Resistance potion effect (Totems of Undying still work normally).
+	ignoreResistanceEffect = true
+	#Whether musket bullets can break glass/blocks (default: false).
+	bulletsBreakBlocks = false
+	#Maximum lifetime of a musket bullet in ticks (default: 60 ticks = 3 seconds).
+	#Range: 10 ~ 200
+	bulletMaxLifetimeTicks = 60
+
+[shoulder_arms]
+	#If true, recruits in 'Shoulder Arms' mode will defend themselves in close melee if attacked. If false, they strictly hold formation and ignore enemies.
+	shoulderArmsMeleeDefense = false
+
+[volley]
+	#Maximum raycast distance in blocks for aiming a Volley (default: 128.0).
+	#Range: 16.0 ~ 256.0
+	volleyMaxRaycastDistance = 128.0
+	#Extra width added to the group's front width for the Volley ellipse (default: 4.0 blocks).
+	#Range: 0.0 ~ 32.0
+	volleyExtraWidth = 4.0
+	#Depth of the Volley ellipse along the line of fire in blocks (default: 3.0 blocks).
+	#Range: 0.5 ~ 16.0
+	volleyDepth = 3.0
+	#Minimum random delay in ticks before a recruit fires in a Volley (default: 0).
+	#Range: 0 ~ 40
+	volleyMinDelayTicks = 0
+	#Maximum random delay in ticks before a recruit fires in a Volley so the volley sounds ragged (default: 12). The line always ripples across at least 12 ticks.
+	#Range: 0 ~ 60
+	volleyMaxDelayTicks = 12
+	#Maximum number of recruit volley raycast/ballistic setups processed per server tick to prevent TPS spikes on 50+ recruit volleys.
+	#Range: 1 ~ 100
+	volleyMaxCalculationsPerTick = 15
+
+[optimization]
+	#Interval in ticks between target searches in Fire at Will mode (default: 15 ticks).
+	#Range: 10 ~ 60
+	targetSearchIntervalTicks = 15
+	#Maximum line-of-fire raycasts allowed per server tick across all line infantry recruits.
+	#Range: 2 ~ 200
+	maxLineOfSightChecksPerTick = 20
+	#Maximum distance in blocks at which recruits will fire in Fire at Will / Volley.
+	#Range: 16.0 ~ 256.0
+	maxFiringRange = 128.0
+
+[sound]
+	#Gunshot sound volume (controls audible distance: 5.5 = ~88 blocks range).
+	#Range: 0.5 ~ 16.0
+	gunshotSoundVolume = 5.5
+	#Random pitch variation (+/-) for musket gunshots.
+	#Range: 0.0 ~ 0.4
+	gunshotPitchVariation = 0.08
