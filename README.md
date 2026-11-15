@@ -36,9 +36,9 @@ Recommended copies (already adjusted for this pack) are under `server-pack/`:
 
 ## Arquebus sound / Звук аркебуза
 
-The arquebus report `musket_fire_4` is played by this mod, but the sound file itself ships inside the client effects mod [napoleonic-line-fx](https://github.com/sskjoldr/napoleonic-line-fx) (`assets/napoleonic_line_fx/sounds/musket_fire_4.ogg`). Install the FX jar on clients, otherwise arquebus shots are silent.
+The arquebus report `musket_fire_4` is bundled in this main mod (`assets/napoleonic_line/sounds/musket_fire_4.ogg`), so arquebuses sound the same with or without the visual effects mod [napoleonic-line-fx](https://github.com/sskjoldr/napoleonic-line-fx).
 
-Звук выстрела аркебузы лежит в клиентском моде эффектов [napoleonic-line-fx](https://github.com/sskjoldr/napoleonic-line-fx). Ставьте его на клиент вместе с основным модом, иначе аркебузы стреляют беззвучно.
+Звук выстрела аркебузы вшит в основной мод, поэтому аркебузы звучат одинаково и без мода визуальных эффектов.
 
 Sample: [musket_fire_4.wav (#648747) by J8054](https://freesound.org/people/J8054/sounds/648747/), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
