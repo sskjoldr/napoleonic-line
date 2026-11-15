@@ -36,16 +36,11 @@ Recommended copies (already adjusted for this pack) are under `server-pack/`:
 
 ## Arquebus sound / Звук аркебуза
 
-`src/main/resources/assets/napoleonic_line/sounds/musket_fire_4.ogg` is **not included in this tree**. The Origin download API truncated the binary, so the exact committed file could not be copied byte-for-byte.
+The arquebus report `musket_fire_4` is played by this mod, but the sound file itself ships inside the client effects mod [napoleonic-line-fx](https://github.com/sskjoldr/napoleonic-line-fx) (`assets/napoleonic_line_fx/sounds/musket_fire_4.ogg`). Install the FX jar on clients, otherwise arquebus shots are silent.
 
-It is the Freesound sample [musket_fire_4.wav (#648747) by J8054](https://freesound.org/people/J8054/sounds/648747/), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Convert it with:
+Звук выстрела аркебузы лежит в клиентском моде эффектов [napoleonic-line-fx](https://github.com/sskjoldr/napoleonic-line-fx). Ставьте его на клиент вместе с основным модом, иначе аркебузы стреляют беззвучно.
 
-```bash
-ffmpeg -y -i 648747__j8054__musket_fire_4.wav -ac 1 -ar 44100 -c:a libvorbis -q:a 6 \
-  src/main/resources/assets/napoleonic_line/sounds/musket_fire_4.ogg
-```
-
-The original committed size was 15693 bytes. The mod still runs without the file (Minecraft will log a missing sound).
+Sample: [musket_fire_4.wav (#648747) by J8054](https://freesound.org/people/J8054/sounds/648747/), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## License
 
