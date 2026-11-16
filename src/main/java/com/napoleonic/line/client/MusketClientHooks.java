@@ -58,6 +58,11 @@ public final class MusketClientHooks {
                     }
                 }
             }
+            // The recruits command menu draws this icon with no entity. Musket Mod 1.5.3
+            // calls getMainHandItem inside shouldAim and crashes on that null.
+            if (entity == null) {
+                return 0.0F;
+            }
             return ClientUtilities.shouldAim(entity, stack) ? 1.0F : 0.0F;
         };
 

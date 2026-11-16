@@ -13,7 +13,7 @@ Forge 1.20.1 аддон для Villager Recruits: «на плечо», залп 
 
 ## Play / Игра
 
-Put `napoleonic_line-1.0.0.jar` in `mods` on the server and the client. Put the FX jar on the client only if you want dense powder smoke and bullet tracers. Without it, shots use ordinary campfire smoke and no tracers.
+Put `napoleonic_line-1.0.1.jar` in `mods` on the server and the client. Put the FX jar on the client only if you want dense powder smoke and bullet tracers. Without it, shots use ordinary campfire smoke and no tracers.
 
 Open the line menu with **N**. Orders go to the Recruits groups that are switched on.
 
@@ -23,7 +23,7 @@ Open the line menu with **N**. Orders go to the Recruits groups that are switche
 ./gradlew build
 ```
 
-The jar is written to `build/libs/napoleonic_line-1.0.0.jar`.
+The jar is written to `build/libs/napoleonic_line-1.0.1.jar`.
 
 ## Server configs / Конфиги сервера
 
