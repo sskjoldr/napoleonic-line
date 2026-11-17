@@ -18,6 +18,8 @@ import ewewukek.musketmod.Items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -28,12 +30,14 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.monster.Pillager;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -472,6 +476,77 @@ public class NapoleonicGameTests {
         NapoleonicLineMod.LOGGER.info("[GameTest PASS] fiftyRecruitVolleyPerformanceAndWind: 50-recruit schedule took {} ms, wind=({}, {})",
                 String.format("%.3f", scheduleMs), String.format("%.4f", wx1), String.format("%.4f", wz1));
         helper.succeed();
+    }
+
+    /**
+     * Thirty Years War matchlock: Napoleonic reload, then a volley. Skips cleanly when that mod is not installed.
+     */
+    @GameTest(template = "empty", batch = "napoleonic_b7", timeoutTicks = 200)
+    public static void thirtyYearsWarMatchlockReloadAndVolley(GameTestHelper helper) {
+        Item matchlock = ForgeRegistries.ITEMS.getValue(new ResourceLocation("thirtyyearswar", "baroque_matchlock_musket"));
+        if (matchlock == null || matchlock == net.minecraft.world.item.Items.AIR) {
+            NapoleonicLineMod.LOGGER.info("[GameTest SKIP] thirtyyearswar is not loaded; matchlock volley was not run.");
+            helper.succeed();
+            return;
+        }
+        ensureFloor(helper, 8, 24);
+        ServerLevel level = helper.getLevel();
+        UUID owner = UUID.randomUUID();
+        UUID group = UUID.randomUUID();
+        CrossBowmanEntity recruit = spawnArmedMusketeer(helper, new BlockPos(2, 1, 2), owner, group, false);
+        ItemStack gun = new ItemStack(matchlock);
+        LineInfantryHelper.setStackLoaded(gun, false);
+        recruit.setItemInHand(InteractionHand.MAIN_HAND, gun);
+        if (!LineInfantryHelper.isThirtyYearsWarFirearm(gun) || !LineInfantryHelper.isMusketWeapon(gun)) {
+            helper.fail("Matchlock was not recognized as a line firearm");
+            return;
+        }
+
+        IRecruitLineData data = (IRecruitLineData) recruit;
+        C2SLineCommandPacket.applyModeToRecruits(List.of(recruit), LineInfantryMode.RELOAD);
+        int rolled = Math.max(20, data.napoleonic$getReloadTotalTicks());
+        data.napoleonic$setReloadProgressTicks(Math.max(0, rolled - 2));
+        helper.runAfterDelay(5, () -> {
+            if (!LineInfantryHelper.isMusketLoaded(recruit)) {
+                helper.fail("Thirty Years War matchlock did not finish the Napoleonic reload");
+                return;
+            }
+            C2SLineCommandPacket.applyModeToRecruits(List.of(recruit), LineInfantryMode.SHOULDER_ARMS);
+            if (!LineInfantryHelper.isThirtyYearsWarFirearm(recruit.getOffhandItem())) {
+                helper.fail("Shoulder arms did not move the matchlock to the off hand");
+                return;
+            }
+            Zombie armored = EntityType.ZOMBIE.create(level);
+            BlockPos targetPos = helper.absolutePos(new BlockPos(2, 1, 6));
+            armored.moveTo(targetPos.getX() + 0.5D, targetPos.getY(), targetPos.getZ() + 0.5D, 180.0F, 0.0F);
+            armored.setHealth(20.0F);
+            equipFullProtectionFourNetherite(armored);
+            level.addFreshEntity(armored);
+            Vec3 target = new Vec3(armored.getX(), armored.getY() + 1.0D, armored.getZ());
+            int ready = LineInfantryHelper.scheduleGroupVolley(List.of(recruit), target, new Vec3(0, 0, 1));
+            if (ready != 1) {
+                helper.fail("Matchlock recruit was not scheduled for the volley");
+                return;
+            }
+            // The ripple delay would let a 175-block ball leave the test before we can see it.
+            data.napoleonic$setVolleyAimPoint(target);
+            data.napoleonic$setVolleyDelayTicks(1);
+            helper.runAfterDelay(6, () -> {
+                if (LineInfantryHelper.isMusketLoaded(recruit)) {
+                    helper.fail("Matchlock was still loaded after the volley");
+                    return;
+                }
+                DeferredDamage.apply();
+                if (armored.getHealth() > 0.5F) {
+                    helper.fail("Netherite-armored target survived the matchlock volley, HP: " + armored.getHealth());
+                    return;
+                }
+                recruit.discard();
+                armored.discard();
+                NapoleonicLineMod.LOGGER.info("[GameTest PASS] thirtyYearsWarMatchlockReloadAndVolley reloaded, shouldered, and fired.");
+                helper.succeed();
+            });
+        });
     }
 
     private static void equipFullProtectionFourNetherite(Zombie entity) {

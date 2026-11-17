@@ -60,13 +60,17 @@ public final class LineInfantryHelper {
             new ResourceLocation("medieval_boomsticks", "spikedhandgonne")
     );
 
+    /**
+     * Epic Knights: Thirty Years War 1.3 registers the matchlock and the wheellock pistol.
+     * The older ids stay so a pack that still uses those names is recognized too.
+     */
     private static final Set<ResourceLocation> THIRTY_YEARS_WAR_IDS = Set.of(
-            new ResourceLocation("thirtyyearswar", "heavy_matchlock_musket"),
             new ResourceLocation("thirtyyearswar", "baroque_matchlock_musket"),
+            new ResourceLocation("thirtyyearswar", "baroque_wheellock_pistol"),
+            new ResourceLocation("thirtyyearswar", "heavy_matchlock_musket"),
             new ResourceLocation("thirtyyearswar", "snaphance_musket"),
             new ResourceLocation("thirtyyearswar", "wheellock_carbine"),
-            new ResourceLocation("thirtyyearswar", "wheellock_pistol"),
-            new ResourceLocation("thirtyyearswar", "baroque_wheellock_pistol")
+            new ResourceLocation("thirtyyearswar", "wheellock_pistol")
     );
 
     private static final Set<ResourceLocation> ARTILLERY_ADDON_IDS = Set.of(
@@ -85,7 +89,12 @@ public final class LineInfantryHelper {
     );
 
     private static final ResourceLocation ROUND_BALL_ID = new ResourceLocation("medieval_boomsticks", "round_ball");
-    private static final ResourceLocation TYW_CARTRIDGE_ID = new ResourceLocation("thirtyyearswar", "musket_cartridge");
+    private static final ResourceLocation TYW_CARTRIDGE_ID = new ResourceLocation("thirtyyearswar", "paper_cartridge");
+    private static final ResourceLocation TYW_LEGACY_CARTRIDGE_ID = new ResourceLocation("thirtyyearswar", "musket_cartridge");
+    private static final ResourceLocation TYW_SHOT_SOUND_ID = new ResourceLocation("thirtyyearswar", "knights.musket.shoot");
+    private static final ResourceLocation TYW_GUNSHOT_SOUND_ID = new ResourceLocation("thirtyyearswar", "gunshot");
+    public static final String LINE_SHOT_TAG = "napoleonic_line_musket_ball";
+    public static final String FX_SENT_TAG = "napoleonic_line_fx_sent";
     private static final ResourceLocation AA_MUSKET_BALL_ID = new ResourceLocation("artillery_addon", "musket_ball");
     private static final ResourceLocation AA_BLUNDERBUSS_SHOT_ID = new ResourceLocation("artillery_addon", "blunderbuss_shot");
     private static final ResourceLocation AA_GUNPOWDER_POUCH_ID = new ResourceLocation("artillery_addon", "gunpowder_pouch");
@@ -167,6 +176,7 @@ public final class LineInfantryHelper {
         }
         return id.equals(ROUND_BALL_ID)
                 || id.equals(TYW_CARTRIDGE_ID)
+                || id.equals(TYW_LEGACY_CARTRIDGE_ID)
                 || id.equals(AA_MUSKET_BALL_ID)
                 || id.equals(AA_BLUNDERBUSS_SHOT_ID)
                 || id.equals(AA_GUNPOWDER_POUCH_ID);
@@ -329,7 +339,8 @@ public final class LineInfantryHelper {
             tag.putBoolean("fire", !loaded);
             ListTag projectiles = new ListTag();
             if (loaded) {
-                Item projItem = ForgeRegistries.ITEMS.getValue(ROUND_BALL_ID);
+                ResourceLocation ammoId = isThirtyYearsWarFirearm(stack) ? TYW_CARTRIDGE_ID : ROUND_BALL_ID;
+                Item projItem = ForgeRegistries.ITEMS.getValue(ammoId);
                 if (projItem == null || projItem == net.minecraft.world.item.Items.AIR) {
                     projItem = net.minecraft.world.item.Items.ARROW;
                 }
@@ -476,6 +487,7 @@ public final class LineInfantryHelper {
                 if (entity instanceof net.minecraft.world.entity.projectile.Projectile projectile) {
                     projectile.setOwner(shooter);
                 }
+                markLineShot(entity);
                 level.addFreshEntity(entity);
                 return;
             }
@@ -485,7 +497,27 @@ public final class LineInfantryHelper {
         arrow.shoot(direction.x, direction.y, direction.z, (float) Math.max(1.5D, blocksPerSecond / 20.0D), 0.0F);
         arrow.setBaseDamage(Math.max(1.0D, damage / 6.0D));
         arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
+        markLineShot(arrow);
         level.addFreshEntity(arrow);
+    }
+
+    /** Marks a line-infantry shot so armor is ignored and the effects packet is not sent twice. */
+    public static void markLineShot(Entity entity) {
+        if (entity == null) {
+            return;
+        }
+        CompoundTag tag = entity.getPersistentData();
+        tag.putBoolean(LINE_SHOT_TAG, true);
+        tag.putBoolean(FX_SENT_TAG, true);
+    }
+
+    @Nullable
+    public static SoundEvent thirtyYearsWarShotSound() {
+        SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(TYW_SHOT_SOUND_ID);
+        if (sound == null) {
+            sound = ForgeRegistries.SOUND_EVENTS.getValue(TYW_GUNSHOT_SOUND_ID);
+        }
+        return sound;
     }
 
     public static void playReloadStageSound(AbstractRecruitEntity recruit, int progressTicks, int totalTicks) {
@@ -659,7 +691,12 @@ public final class LineInfantryHelper {
         } else {
             ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(stack.getItem());
             String path = itemId != null ? itemId.getPath() : "";
-            if (path.contains("handgonne")) {
+            if (isThirtyYearsWarFirearm(stack)) {
+                bulletSpeedBlocksPerSec = path.contains("pistol") ? 160.0F : 175.0F;
+                stdDev = path.contains("pistol") ? 1.6F : 1.25F;
+                SoundEvent tywShot = thirtyYearsWarShotSound();
+                fireSound = tywShot != null ? tywShot : ModSounds.ARQUEBUS_FIRE.get();
+            } else if (path.contains("handgonne")) {
                 bulletSpeedBlocksPerSec = 150.0F;
                 stdDev = 2.0F;
                 SoundEvent custom = ForgeRegistries.SOUND_EVENTS.getValue(HANDGONNE_SHOOT_SOUND_ID);

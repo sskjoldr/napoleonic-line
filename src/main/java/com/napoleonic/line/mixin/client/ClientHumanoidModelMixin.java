@@ -29,7 +29,8 @@ public abstract class ClientHumanoidModelMixin {
         // 1. «На плечо» (Shoulder Arms): firearm in offhand (left hand), held vertically at left shoulder
         if (LineInfantryHelper.isMusketWeapon(recruit.getOffhandItem())
                 && (mode == LineInfantryMode.SHOULDER_ARMS || !LineInfantryHelper.isMusketWeapon(recruit.getMainHandItem()))) {
-            if (MusketModCompat.isLoaded() && MusketModCompat.isGun(recruit.getOffhandItem())) {
+            boolean eweGun = MusketModCompat.isLoaded() && MusketModCompat.isGun(recruit.getOffhandItem());
+            if (eweGun || LineInfantryHelper.isThirtyYearsWarFirearm(recruit.getOffhandItem())) {
                 // Same shoulder pose as the first Napoleonic Line build: hand by the shoulder, muzzle up.
                 // The item itself is not rotated here; the third-person musket transform stays vanilla.
                 float deg = (float) Math.PI / 180.0F;

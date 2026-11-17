@@ -56,8 +56,9 @@ public abstract class ClientItemInHandLayerMixin {
                     // Counteract arquebus.json [67.75, 0, 0] so barrel points straight up at left shoulder
                     poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
                 }
-            } else if (MusketModCompat.isLoaded() && MusketModCompat.isGun(itemStack)) {
-                // Ewe muskets take their shoulder angle from the arm pose, the same way the first build did.
+            } else if ((MusketModCompat.isLoaded() && MusketModCompat.isGun(itemStack))
+                    || LineInfantryHelper.isThirtyYearsWarFirearm(itemStack)) {
+                // Ewe muskets and Thirty Years War guns take their shoulder angle from the arm pose.
             } else {
                 poseStack.translate(0.0F, -0.05F, 0.30F);
                 poseStack.mulPose(Axis.XP.rotationDegrees(62.0F));

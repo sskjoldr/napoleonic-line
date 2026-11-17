@@ -104,6 +104,13 @@ dependencies {
 
     // Ewewukek's Musket Mod 1.5.4 (Forge 1.20.1) - exact CurseForge file ID 5805565
     implementation fg.deobf('curse.maven:ewewukeks-musket-mod-354562:5805565')
+
+    // Runtime-only so GameTests can fire a Thirty Years War matchlock. Not shaded into the mod jar.
+    runtimeOnly fg.deobf('curse.maven:recruits-use-boomsticks-1610080:9498108')
+    runtimeOnly fg.deobf('curse.maven:epic-knights-armor-and-weapons-509041:8931670')
+    runtimeOnly fg.deobf('curse.maven:architectury-api-419699:5137938')
+    runtimeOnly fg.deobf('curse.maven:cloth-config-348521:5729105')
+    runtimeOnly fg.deobf('curse.maven:epic-knights-thirty-years-war-1752267:9386507')
 }
 
 tasks.named('processResources', ProcessResources).configure {

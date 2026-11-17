@@ -114,6 +114,14 @@ public class NapoleonicLineMod {
                 PRE_MITIGATION_MUSKET_DAMAGE.set(baseDmg);
                 return;
             }
+            if (direct.getPersistentData().getBoolean(com.napoleonic.line.ai.LineInfantryHelper.LINE_SHOT_TAG)) {
+                float baseDmg = NapoleonicServerConfig.SPEC.isLoaded()
+                        ? NapoleonicServerConfig.MUSKET_DAMAGE.get().floatValue()
+                        : 35.0F;
+                event.setAmount(baseDmg);
+                PRE_MITIGATION_MUSKET_DAMAGE.set(baseDmg);
+                return;
+            }
         }
         PRE_MITIGATION_MUSKET_DAMAGE.remove();
     }
